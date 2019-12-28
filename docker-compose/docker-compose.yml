@@ -1,0 +1,31 @@
+version: '3.4'
+ 
+services:
+  web:
+    image: nginx:latest
+    container_name: web
+    depends_on:
+      - php
+    ports:
+      - "8000:80"
+    volumes:
+      - ./www:/var/www/html
+      - ./configs/default.conf:/etc/nginx/conf.d/default.conf
+  php:
+    build:
+      context: ./build
+      dockerfile: Dockerfile
+    image: php-mysql
+    container_name: php
+    volumes:
+      - ./www:/var/www/html
+  db:
+    image: mysql:5.7
+    container_name: db
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: docker337
+      MYSQL_DATABASE: db_medium_docker
+    volumes:
+      - ./data:/var/lib/mysql
